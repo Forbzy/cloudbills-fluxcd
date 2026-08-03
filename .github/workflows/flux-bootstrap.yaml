@@ -15,7 +15,12 @@ jobs:
 
     name: Bootstrap Flux
 
-    if: github.ref == 'refs/heads/main'
+    if: |
+      github.ref == 'refs/heads/main' &&
+      (
+        github.event_name == 'workflow_dispatch' ||
+        github.event.workflow_run.conclusion == 'success'
+      )
 
     runs-on: ubuntu-latest
 
@@ -35,7 +40,8 @@ jobs:
 
       - name: Install OCI CLI
         run: |
-          pip3 install oci-cli
+          bash -c "$(curl -L https://raw.githubusercontent.com/oracle/oci-cli/master/scripts/install/install.sh)" -- \
+            --accept-all-defaults
 
       - name: Install kubectl
         uses: azure/setup-kubectl@v4
@@ -57,17 +63,32 @@ jobs:
           key_file=/home/runner/.oci/oci_api_key.pem
           EOF
 
+      - name: Get Cluster ID
+        id: cluster
+        run: |
+          CLUSTER_ID=$(oci ce cluster list \
+            --compartment-id ${{ secrets.OCI_COMPARTMENT_OCID }} \
+            --query "data[?\"name\"=='cloudbills'].id | [0]" \
+            --raw-output)
+
+          echo "cluster_id=$CLUSTER_ID" >> $GITHUB_OUTPUT
+
       - name: Create kubeconfig
         run: |
           mkdir -p ~/.kube
 
           oci ce cluster create-kubeconfig \
-            --cluster-id ${{ needs.apply.outputs.cluster_id }} \
+            --cluster-id ${{ steps.cluster.outputs.cluster_id }} \
             --file ~/.kube/config \
             --region ${{ secrets.OCI_REGION }} \
             --token-version 2.0.0
         env:
           TF_VAR_oci_region: ${{ secrets.OCI_REGION }}
+
+      - name: Verify cluster access
+        run: |
+          kubectl cluster-info
+          kubectl get nodes
 
       - name: Install Flux CLI
         run: |
@@ -79,16 +100,15 @@ jobs:
         run: |
           kubectl get namespace flux-system
 
-          flux check --pre
-
       - name: Bootstrap Flux
         if: steps.flux_check.outcome == 'failure'
         run: |
           flux bootstrap github \
             --owner Forbzy \
-            --repository cloudbills \
+            --repository cloudbills-fluxcd \
             --branch main \
             --path gitops/clusters/develop \
-            --personal
+            --personal \
+            --token-auth
         env:
           GITHUB_TOKEN: ${{ secrets.FLUX_GITHUB_TOKEN }}
