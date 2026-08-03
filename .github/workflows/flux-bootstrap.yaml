@@ -26,7 +26,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: terraform/oracleCloud/environments/develop
+        working-directory: infrastructure/oracleCloud/environments/develop
 
     steps:
 
