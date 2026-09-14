@@ -3,7 +3,7 @@ kind: Kustomization
 resources:
 - ../../../applications/metallb
 - ../../../applications/cert-manager
-- ../../../applications/nginx-ingress
+- ../../../applications/ingress-nginx
 - ../../../applications/grafana
 - ../../../applications/prometheus
 - ../../../applications/namespace.yaml
