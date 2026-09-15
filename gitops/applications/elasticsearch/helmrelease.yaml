@@ -5,6 +5,9 @@ metadata:
   name: elasticsearch
   namespace: logging
 spec:
+  dependsOn:
+    - name: ingress-nginx
+      namespace: flux-system
   interval: 30m
   chart:
     spec:
@@ -14,6 +17,7 @@ spec:
         kind: HelmRepository
         name: elastic
         namespace: flux-system
+  
   values:
     replicas: 1
     minimumMasterNodes: 2
@@ -32,3 +36,17 @@ spec:
       resources:
         requests:
           storage: 50Gi
+
+    # 🟢 EMBEDDED INGRESS ROUTING CONFIGURATION
+    ingress:
+      enabled: true
+      className: "nginx"
+      annotations:
+        cert-manager.io/cluster-issuer: "letsencrypt-prod"
+      path: /
+      hosts:
+        - elasticsearch.forbzyltd.com
+      tls:
+        - secretName: elasticsearch-tls
+          hosts:
+            - elasticsearch.forbzyltd.com
