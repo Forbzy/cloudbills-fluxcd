@@ -61,7 +61,7 @@ spec:
         type: NodePort 
         nodePorts:
           # 🟢 Pin the exact HTTP port to match your configuration mapping
-          http: 31262 
+          http: 30218
         enabled: true
 
       # Enable Prometheus metrics
