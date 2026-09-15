@@ -126,3 +126,8 @@ spec:
         limits:
           cpu: 50m
           memory: 64Mi
+      image:
+        # 🟢 SWITCH TO THIS: The modern image that natively supports ARM64 nodes
+        repository: registry.k8s.io/ingress-nginx/defaultbackend
+        tag: "1.5"
+        image: "" # Clears any hardcoded suffix hooks
