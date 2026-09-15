@@ -20,15 +20,15 @@ spec:
   
   values:
     replicas: 1
-    minimumMasterNodes: 2
-    esJavaOpts: "-Xmx1g -Xms1g"
+    minimumMasterNodes: 1
+    esJavaOpts: "-Xmx512m -Xms512m" # 🟢 Lower memory usage to prevent RAM throttling
     resources:
       requests:
-        cpu: "500m"
-        memory: "2Gi"
+        cpu: "100m"      # 🟢 Scale down from 500m to 100m (0.1 CPU)
+        memory: "1Gi"    # 🟢 Scale down from 2Gi to 1Gi
       limits:
-        cpu: "1"
-        memory: "2Gi"
+        cpu: "500m"      # Allow it to burst up to 0.5 CPU if free
+        memory: "1Gi"
     persistence:
       enabled: true
     volumeClaimTemplate:
