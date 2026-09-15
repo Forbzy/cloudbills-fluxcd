@@ -57,14 +57,12 @@ spec:
 
       # Service configuration for the controller
       service:
+        # 🟢 THE FIX: Change from LoadBalancer to NodePort to stop the <pending> loop
+        type: NodePort 
+        nodePorts:
+          # 🟢 Pin the exact HTTP port to match your configuration mapping
+          http: 31262 
         enabled: true
-        type: LoadBalancer
-        # Annotations for cloud provider load balancers (AWS example)
-        annotations: {}
-          # service.beta.kubernetes.io/aws-load-balancer-type: external
-          # service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: instance
-          # service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
-          # service.beta.kubernetes.io/aws-load-balancer-attributes: load_balancing.cross_zone.enabled=true
 
       # Enable Prometheus metrics
       metrics:
