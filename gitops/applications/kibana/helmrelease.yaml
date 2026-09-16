@@ -15,8 +15,6 @@ spec:
         name: elastic
         namespace: flux-system
   values:
-# Inside infrastructure/logging/kibana.yaml
-  values:
     elasticsearchHosts: "https://logging.svc"
     extraEnvs:
       - name: NODE_TLS_REJECT_UNAUTHORIZED
