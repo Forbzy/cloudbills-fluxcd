@@ -17,7 +17,7 @@ spec:
         namespace: flux-system
 
   values:
-    elasticsearchHosts: "https://elasticsearch-master.logging.svc.cluster.local:9200"
+    elasticsearchHosts: "https://elasticsearch-master.logging.svc:9200"
 
     extraEnvs:
       - name: NODE_TLS_REJECT_UNAUTHORIZED
