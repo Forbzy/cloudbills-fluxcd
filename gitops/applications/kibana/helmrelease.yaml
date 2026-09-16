@@ -23,6 +23,14 @@ spec:
       - name: NODE_TLS_REJECT_UNAUTHORIZED
         value: "0"
 
+    elasticsearchCredentialSecret: "elasticsearch-master-credentials"
+    
+    kibanaConfig:
+          kibana.yml: |
+            xpack.security.encryptionKey: "a_long_32_character_random_string_here_ok"
+            xpack.encryptedSavedObjects.encryptionKey: "a_long_32_character_random_string_here_ok"
+            xpack.reporting.encryptionKey: "a_long_32_character_random_string_here_ok"
+
     resources:
       requests:
         cpu: "100m"
