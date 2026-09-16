@@ -6,6 +6,7 @@ metadata:
   namespace: logging
 spec:
   interval: 30m
+
   chart:
     spec:
       chart: kibana
@@ -14,11 +15,14 @@ spec:
         kind: HelmRepository
         name: elastic
         namespace: flux-system
+
   values:
-    elasticsearchHosts: "https://logging.svc"
+    elasticsearchHosts: "http://elasticsearch-master.logging.svc.cluster.local:9200"
+
     extraEnvs:
       - name: NODE_TLS_REJECT_UNAUTHORIZED
         value: "0"
+
     resources:
       requests:
         cpu: "200m"
@@ -26,18 +30,19 @@ spec:
       limits:
         cpu: "500m"
         memory: "1Gi"
-        
-    # 🟢 UPDATE THIS TO MATCH YOUR NEW DOMAIN
+
     ingress:
       enabled: true
       className: nginx
+
       annotations:
-        # Tells cert-manager to automatically fetch a free Let's Encrypt SSL certificate
         cert-manager.io/cluster-issuer: "letsencrypt-prod"
+
       hosts:
-        - host: kibana.forbzyltd.com # 🟢 Your real domain name
+        - host: kibana.forbzyltd.com
           paths:
             - path: /
+
       tls:
         - secretName: kibana-tls-certs
           hosts:
