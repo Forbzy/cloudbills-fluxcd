@@ -23,6 +23,8 @@ spec:
       - name: NODE_TLS_REJECT_UNAUTHORIZED
         value: "0"
 
+    elasticsearchCredentialSecret: "elasticsearch-master-credentials"
+    
     kibanaConfig:
           kibana.yml: |
             xpack.security.encryptionKey: "a_long_32_character_random_string_here_ok"
